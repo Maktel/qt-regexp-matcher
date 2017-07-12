@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
-#include <QRegularExpression>
+#include "regexp_matcher.h"
 
 class MainWindow : public QMainWindow {
   Q_OBJECT
@@ -13,14 +13,16 @@ class MainWindow : public QMainWindow {
   MainWindow(QWidget* parent = 0);
 
  private:
-  QRegularExpression m_regexp{""};
   QWidget* m_widget;
+  RegExpMatcher m_regexp_matcher{};
   QLineEdit* m_regexp_field;
   QLineEdit* m_text_field;
   QLineEdit* m_result_field;
   QLabel* m_error_message;
 
-  void buildUi();
+  void initUi();
+
+ private slots:
   void constructRegExp();
   void runMatch();
 };

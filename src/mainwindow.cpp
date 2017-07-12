@@ -2,8 +2,6 @@
 #include <QDebug>
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QRegularExpression>
-#include <QStyle>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
@@ -15,10 +13,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
   min_size.setWidth(750);
   m_widget->setMinimumSize(min_size);
 
-  buildUi();
+  initUi();
 }
 
-void MainWindow::buildUi() {
+void MainWindow::initUi() {
   QGroupBox* input_group = new QGroupBox;
   QHBoxLayout* input_group_layout = new QHBoxLayout(input_group);
   QLabel* text_label = new QLabel(tr("Checked text:"));
@@ -48,10 +46,10 @@ void MainWindow::buildUi() {
 }
 
 void MainWindow::constructRegExp() {
-  m_regexp = QRegularExpression(m_regexp_field->text());
+  m_regexp_matcher.setRegExp(m_regexp_field->text());
 
-  if (!m_regexp.isValid()) {
-    m_error_message->setText(m_regexp.errorString());
+  if (m_regexp_matcher.isInvalid()) {
+    m_error_message->setText(m_regexp_matcher.errorString());
     m_result_field->clear();
   }
 
@@ -59,27 +57,13 @@ void MainWindow::constructRegExp() {
 }
 
 void MainWindow::runMatch() {
-  if (!m_regexp.isValid()) {
+  if (m_regexp_matcher.isInvalid()) {
     return;
   }
 
-  QString text = m_text_field->text();
-  QString result("");
-  int matches = 0;
-
-  int offset = 0;
-  QRegularExpressionMatch match = m_regexp.match(text, offset);
-  while (match.hasMatch() && !match.captured(0).isEmpty()) {
-    ++matches;
-    QString found = match.captured(0);
-    found = QString::number(match.capturedStart(0)) + ": \"" + found + "\"";
-    if (!result.isEmpty()) result += ", ";
-    result.append(found);
-    offset = match.capturedStart(0) + 1;
-    match = m_regexp.match(text, offset);
-    qDebug() << offset;
-  }
+  QString result = m_regexp_matcher.runMatch(m_text_field->text());
   m_result_field->setText(result);
 
-  m_error_message->setText("Found " + QString::number(matches) + " match(es):");
+  m_error_message->setText("Found " + m_regexp_matcher.lastMatchLength() +
+                           " match(es):");
 }
