@@ -24,8 +24,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += src/main.cpp \
-        src/mainwindow.cpp
+        src/mainwindow.cpp \
+    src/regexp_matcher.cpp
 
-HEADERS  += src/mainwindow.h
+HEADERS  += src/mainwindow.h \
+    src/regexp_matcher.h
 
 CONFIG += c++14

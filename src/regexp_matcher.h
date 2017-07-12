@@ -1,0 +1,4 @@
+#ifndef REGEXP_MATCHER_H
+#define REGEXP_MATCHER_H
+
+#endif // REGEXP_MATCHER_H
